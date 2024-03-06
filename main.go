@@ -29,7 +29,14 @@ func main() {
 
 	path, _ := os.Getwd()
 	if args := flag.Args(); len(args) != 0 {
-		path = args[0]
+		var err error
+		path, err = filepath.Abs(args[0])
+		if err != nil {
+			panic(err)
+		}
+	}
+	if _, err := os.Stat(filepath.Join(path, "go.mod")); err != nil {
+		panic(err)
 	}
 
 	g := dot.NewGraph(dot.Directed)
